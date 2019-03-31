@@ -1,5 +1,6 @@
 package com.example.login;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,12 +18,12 @@ import static com.basgeekball.awesomevalidation.utility.RegexTemplate.TELEPHONE;
 
 public class Register extends AppCompatActivity {
 
-    DatabaseHelper db;
-    EditText mTextFirstname,mTextUsername,mTextPassword,mTextComfirmPassword,mTextEmail;
-    Button Register;
-AwesomeValidation awesomeValidation;
-    TextView mTextViewLogin;
-    TextView mTextViewForget;
+        DatabaseHelper db;
+        EditText mTextFirstname,mTextUsername,mTextPassword,mTextComfirmPassword,mTextEmail;
+        Button Register;
+        AwesomeValidation awesomeValidation;
+        TextView mTextViewLogin;
+        TextView mTextViewForget;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,9 +47,9 @@ AwesomeValidation awesomeValidation;
                 startActivity(forgetIntent);
             }
         });
-            updateUI();
+            updateU();
     }
-    private void updateUI(){
+    private void updateU(){
         mTextFirstname=(EditText)findViewById(R.id.Firsname);
         mTextUsername=(EditText)findViewById(R.id.Username1);
         mTextPassword=(EditText)findViewById(R.id.Password1);
@@ -69,27 +70,44 @@ AwesomeValidation awesomeValidation;
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              String fname    =   mTextFirstname.getText().toString().trim();
-                String user     =   mTextUsername.getText().toString().trim();
-               String eml      =   mTextEmail.getText().toString().trim();
-                String pwd      =   mTextPassword.getText().toString().trim();
-               //String Cmf_pwd  =   mTextComfirmPassword.getText().toString().trim();
 
-                if (awesomeValidation.validate()) {
-                    Long val = db.addUseer(fname,user,eml, pwd);
-                    if (val > 0) {
+                String strFirstName,strSurname, strEmail, strPassword;
+                strFirstName=mTextFirstname.getText().toString();
+                strSurname = mTextUsername.getText().toString();
+                strEmail = mTextEmail.getText().toString();
+                strPassword=mTextPassword.getText().toString();
 
 
-                        Toast.makeText(Register.this, " You have Register Succesfully", Toast.LENGTH_SHORT);
-                        Intent moveTologin = new Intent(Register.this, MainActivity.class);
-                        startActivity(moveTologin);
-                    }
-                    else{
-                        Toast.makeText(Register.this, "Registeration Error", Toast.LENGTH_SHORT);
+                    DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
 
-                    }
-                    }
+                    ContentValues values = new ContentValues();
+
+
+                    values.put(Database.Student.COL_1,strFirstName );
+                    values.put(Database.Student.COL_2, strSurname);
+                    values.put(Database.Student.COL_3, strEmail);
+                    values.put(Database.Student.COL_4, strPassword);
+
+
+
+                    dh.insert(Database.Student.TABLE_NAME, values);
+
+                    Toast.makeText(getApplicationContext(), "Successfully Saved!", Toast.LENGTH_SHORT).show();
+
+                    mTextFirstname.setText("");
+                    mTextUsername.setText("");
+                    mTextEmail.setText("");
+                    mTextPassword.setText("");
+
+
+                    Intent intent =  new Intent(getApplicationContext(),MainActivity.class);
+                    startActivity(intent);
+
+
+
+
             }
+
         });
     }
 }
